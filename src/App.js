@@ -36,7 +36,8 @@ export default function(){
 								<MinMax max={pr.rest} current={pr.cnt} onChange={cnt => setCnt(pr.id, cnt)} />
 							</td>
 							<td>{pr.price * pr.cnt}</td>
-							<button onClick={() => removeProduct(pr.id)}>Удалить</button>
+							<button type="button" onClick={() => removeProduct(pr.id)}>Удалить</button>
+							<button type="button" onClick={() => setCnt(pr.id, pr.rest) }>MAX</button>
 						</tr>
 					</>
 				)) }

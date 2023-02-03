@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useEffect } from 'react'
 import PropTypes from 'prop-types';
 
 MinMax.propTypes = {
@@ -14,7 +14,7 @@ function MinMax({ min = 1, max, current, onChange }){
 	function applyCurrent(num){
 		let validNum = Math.max(min, Math.min(max, num));
 		onChange(validNum);
-		inp.current.value = validNum;
+		inp.current.value = current;
 	}
 
 	function parseCurrentStr(){
@@ -30,6 +30,10 @@ function MinMax({ min = 1, max, current, onChange }){
 
 	let inc = () => applyCurrent(current + 1);
 	let dec = () => applyCurrent(current - 1);
+
+	useEffect(() => {
+		inp.current.value = current;
+	}, [current]);
 
 	return <div>
 		<button type="button" onClick={ dec }>-</button>
