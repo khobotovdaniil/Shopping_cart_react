@@ -40,18 +40,10 @@ export default function(){
 						</tr>
 					</>
 				)) }
-				<tr>
-					<td>
-						<h2>Total:</h2>
-					</td>
-					<td>
-						<h2>
-							{totalSum}
-						</h2>
-					</td>
-				</tr>
 			</tbody>
 		</table>
+		<hr/>
+		<strong>Total: {totalSum}</strong>
 	</div>;
 }
 
@@ -61,28 +53,28 @@ function productsStub(){
 			id: 100,
 			title: 'Ipnone 200',
 			price: 12000,
-			rest: 10,
+			rest: 100,
 			cnt: 0
 		},
 		{
 			id: 101,
 			title: 'Samsung AAZ8',
 			price: 22000,
-			rest: 5,
+			rest: 50,
 			cnt: 0
 		},
 		{
 			id: 103,
 			title: 'Nokia 3310',
 			price: 5000,
-			rest: 3,
+			rest: 30,
 			cnt: 0
 		},
 		{
 			id: 105,
 			title: 'Huawei ZZ',
 			price: 15000,
-			rest: 8,
+			rest: 80,
 			cnt: 0
 		}
 	];
