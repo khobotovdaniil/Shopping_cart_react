@@ -1,16 +1,14 @@
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { useState } from 'react'
 
-import useWindowSize from './hooks/useWindowSize';
-
-import MinMax from './MinMax/index';
-import ProductCard from './ProductCard';
+import MinMax from './MinMax';
+import Modal from './Modal';
+import BModal from 'react-bootstrap/Modal';
 
 export default function(){
-	let { width } = useWindowSize();
 	let [ products, setProducts ] = useState(productsStub());
+	let [ showDetails, setShowDetails ] = useState(false);
+	let [ showFaq, setShowFaq ] = useState(false);
 	let total = products.reduce((sum, pr) => sum + pr.price * pr.cnt, 0);
-
-	// let total = useMemo(() => products.reduce((sum, pr) => sum + pr.price * pr.cnt, 0), [products]);
 
 	let setCnt = (id, cnt) => {
 		setProducts(products.map(pr => pr.id != id ? pr : ({ ...pr, cnt })));
@@ -22,40 +20,52 @@ export default function(){
 
 	return <div className="container mt-1">
 		<h1>Products list</h1>
-		<table>
-			<tbody>
-				<tr>
-					<th>#</th>
-					<th>Title</th>
-					<th>Price</th>
-					<th>Cnt</th>
-					<th>Total</th>
-					<th>Action</th>
-				</tr>
-				{ products.map((pr, i) => (
-					<tr key={pr.id}>
-						<td>{ i + 1 }</td>
-						<td>{ pr.title }</td>
-						<td>{ pr.price }</td>
-						<td>
-							<MinMax min={1} max={pr.rest} current={pr.cnt} onChange={cnt => setCnt(pr.id, cnt)} />
-						</td>
-						<td>{ pr.price * pr.cnt }</td>
-						<td>
-							<button type="button" onClick={() => removeProduct(pr.id)}>X</button>
-							<button type="button" onClick={() => setCnt(pr.id, pr.rest)}>MAX</button>
-						</td>
+		<hr/>
+		<button className='btn btn-success' onClick={() => setShowDetails(true)}>Total: { total }</button>
+		<Modal 
+			showed={showDetails} 
+			title={`${products.length} items in list, please pay order`} 
+			onClose={() => setShowDetails(false)}
+		>
+			<table>
+				<tbody>
+					<tr>
+						<th>#</th>
+						<th>Title</th>
+						<th>Price</th>
+						<th>Cnt</th>
+						<th>Total</th>
+						<th>Action</th>
 					</tr>
-				)) }
-			</tbody>
-		</table>
-		<hr/>
-		<strong>Total: { total }</strong>
-		<hr/>
-		<ProductCard/>
+					{ products.map((pr, i) => (
+						<tr key={pr.id}>
+							<td>{ i + 1 }</td>
+							<td>{ pr.title }</td>
+							<td>{ pr.price }</td>
+							<td>
+								<MinMax min={1} max={pr.rest} current={pr.cnt} onChange={cnt => setCnt(pr.id, cnt)} />
+							</td>
+							<td>{ pr.price * pr.cnt }</td>
+							<td>
+								<button type="button" onClick={() => removeProduct(pr.id)}>X</button>
+								<button type="button" onClick={() => setCnt(pr.id, pr.rest)}>MAX</button>
+							</td>
+						</tr>
+					)) }
+				</tbody>
+			</table>
+		</Modal>
 		<hr/>
 		<footer>
-			{ width }
+			<button className='btn btn-info' onClick={() => setShowFaq(true)}>FAQ</button>
+			<BModal show={showFaq} onHide={() => setShowFaq(false)}>
+				<BModal.Header>
+					Attention!
+				</BModal.Header>
+				<BModal.Body>
+					<p>Hello, Bootstrap!</p>
+				</BModal.Body>
+			</BModal>
 		</footer>
 	</div>;
 }
