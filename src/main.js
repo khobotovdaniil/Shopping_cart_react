@@ -9,22 +9,19 @@ import props from './MinMax/props';
 ReactDom.render(
 	<App/>,
 	document.querySelector('.app')
-);
-/* 
-<A href="#">
-	<strong></strong>
-	<em></em>
-</A>
-
-React.createElement(
-	A, 
-	{ href: '#' },
-	[
-		React.createElement('strong'),
-		React.createElement('em')
-	]
 )
 
-props
-	href: '#'
-	children: [1,2] */
+/*
+import React from 'react'
+import ReactDom from 'react-dom';
+import MinMax from './MinMax'
+import SettingContext from './contexts/settings'
+
+let settings = { lang: 'en' };
+
+ReactDom.render(
+	<SettingContext.Provider value={settings}>
+		<MinMax min={1} current={3} max={5} onChange={() => {}}/>
+	</SettingContext.Provider>,
+	document.querySelector('.app')
+);  */

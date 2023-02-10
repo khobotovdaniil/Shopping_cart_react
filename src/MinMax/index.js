@@ -1,12 +1,14 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useRef, useEffect, useContext } from 'react'
 import propTypes from './props';
 
 import style from './style.module.css';
+import SettingContext from './../contexts/settings'
 
 MinMaxLazy.propTypes = propTypes;
 
 function MinMaxLazy({ min = 1, max, current, onChange }){
 	let inp = useRef();
+	let settings = useContext(SettingContext);
 
 	function onKeyPress(e){
 		if(e.key === 'Enter'){
@@ -42,7 +44,9 @@ function MinMaxLazy({ min = 1, max, current, onChange }){
 			onBlur={parseCurrentStr} 
 			onKeyPress={onKeyPress}
 		/>
-		<button className="btn btn-success" type="button" onClick={ inc }>+</button>
+		<button className="btn btn-success" type="button" onClick={ inc }
+			title={ settings.lang == 'ru' ? 'Увеличить' : 'Increase' }
+		>+</button>
 	</div>
 }
 

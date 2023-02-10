@@ -1,16 +1,51 @@
 import React, { useState } from 'react'
 
-import MinMax from './MinMax';
-import Modal from './Modal';
-import BModal from 'react-bootstrap/Modal';
+import Cart from './Cart';
+import Order from './Order';
+import Result from './Result';
+
+import SettingContext from './contexts/settings'
 
 export default function(){
-	let [ products, setProducts ] = useState(productsStub());
-	let [ showDetails, setShowDetails ] = useState(false);
-	let [ showFaq, setShowFaq ] = useState(false);
-	let total = products.reduce((sum, pr) => sum + pr.price * pr.cnt, 0);
+	/* settings */
+	let [ settings, setSettings ] = useState({ lang: 'ru', theme: 'light' });
 
-	let setCnt = (id, cnt) => {
+	/* router parody */
+	let [ page, setPage ] = useState('cart');
+	let moveToCart = () => setPage('cart');
+	let moveToOrder= () => setPage('order');
+	let moveToResult = () => setPage('result');
+
+	/* order */
+
+	let [orderForm, setOrderForm] = useState([
+		{name: 'name', label: 'Name', value: '', valid: false, pattern: /^.{2,}$/},
+		{name: 'email', label: 'Email', value: '', valid: false, pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i},
+		{name: 'phone', label: 'Phone', value: '', valid: false, pattern: /^[0-9+]{7}$/i}
+	]);
+
+	let orderData = {};
+
+	orderForm.forEach(field => {
+		orderData[field.name] = field.value;
+	});
+
+	let orderFormUpdate = (name, value) => {
+		setOrderForm(orderForm.map(field => {
+
+			if(field.name != name){
+				return field;
+			}
+
+			let valid = field.pattern.test(value);
+			return { ...field, value, valid };
+		}))
+	}
+
+	/* products */
+	let [ products, setProducts ] = useState(productsStub());
+
+	let setProductCnt = (id, cnt) => {
 		setProducts(products.map(pr => pr.id != id ? pr : ({ ...pr, cnt })));
 	}
 
@@ -18,56 +53,37 @@ export default function(){
 		setProducts(products.filter(el => el.id !== id));
 	}
 
-	return <div className="container mt-1">
-		<h1>Products list</h1>
-		<hr/>
-		<button className='btn btn-success' onClick={() => setShowDetails(true)}>Total: { total }</button>
-		<Modal 
-			showed={showDetails} 
-			title={`${products.length} items in list, please pay order`} 
-			onClose={() => setShowDetails(false)}
-		>
-			<table>
-				<tbody>
-					<tr>
-						<th>#</th>
-						<th>Title</th>
-						<th>Price</th>
-						<th>Cnt</th>
-						<th>Total</th>
-						<th>Action</th>
-					</tr>
-					{ products.map((pr, i) => (
-						<tr key={pr.id}>
-							<td>{ i + 1 }</td>
-							<td>{ pr.title }</td>
-							<td>{ pr.price }</td>
-							<td>
-								<MinMax min={1} max={pr.rest} current={pr.cnt} onChange={cnt => setCnt(pr.id, cnt)} />
-							</td>
-							<td>{ pr.price * pr.cnt }</td>
-							<td>
-								<button type="button" onClick={() => removeProduct(pr.id)}>X</button>
-								<button type="button" onClick={() => setCnt(pr.id, pr.rest)}>MAX</button>
-							</td>
-						</tr>
-					)) }
-				</tbody>
-			</table>
-		</Modal>
-		<hr/>
-		<footer>
-			<button className='btn btn-info' onClick={() => setShowFaq(true)}>FAQ</button>
-			<BModal show={showFaq} onHide={() => setShowFaq(false)}>
-				<BModal.Header>
-					Attention!
-				</BModal.Header>
-				<BModal.Body>
-					<p>Hello, Bootstrap!</p>
-				</BModal.Body>
-			</BModal>
-		</footer>
-	</div>;
+	return <SettingContext.Provider value={settings}>
+		<div className="container mt-1">
+			{ page === 'cart' && 
+				<Cart 
+					onNext={moveToOrder} 
+					products={products}
+					onChange={setProductCnt}
+					onRemove={removeProduct}
+				/> 
+			}
+			{ page === 'order' &&
+				<Order
+					fields={orderForm}
+					onChange={orderFormUpdate}
+					onNext={moveToResult}
+					onPrev={moveToCart} 
+				/>
+			}
+			{ page === 'result' &&
+				<Result 
+					products={products}
+					orderData={orderData}
+				/>
+			}
+			<hr/>
+			<footer>
+				<button type="button" onClick={() => setSettings({ ...settings, lang: 'ru' })}>ru</button>
+				<button type="button" onClick={() => setSettings({ ...settings, lang: 'en' })}>en</button>
+			</footer>
+		</div>
+	</SettingContext.Provider>;
 }
 
 function productsStub(){
@@ -102,29 +118,3 @@ function productsStub(){
 		}
 	];
 }
-
-/* 
-let setCnt = (id, cnt) => {
-	let newProducts = [ ...products ];
-	let productInd = products.findIndex(pr => pr.id == id);
-	let newProduct = { ...products[productInd] };
-	newProduct.cnt = cnt;
-	newProducts[productInd] = newProduct;
-	setProducts(newProducts);
-} */
-
-/*
-
-function fn(i, ev){
-
-}
-
-let elems = document.querySeelctorAll('some');
-
-elems.forEach((el, i) => {
-	el.addEventListener('click', e => fn(i, e))
-
-});
-
-
-*/
