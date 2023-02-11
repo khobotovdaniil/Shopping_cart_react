@@ -1,5 +1,6 @@
 import React, {useContext} from 'react';
-import StorageContext from './contexts/storage';
+import useStore from './hooks/useStore';
+// import StorageContext from './contexts/storage';
 
 import MinMax from './MinMax';
 import {observer} from 'mobx-react-lite';
@@ -7,7 +8,8 @@ import {observer} from 'mobx-react-lite';
 export default observer(Cart);
 
 function Cart({ onNext }){
-	let {cart} = useContext(StorageContext);
+	let [cart] = useStore('cart');
+	// let {cart} = useContext(StorageContext);
 	let {products, total, remove, change} = cart;
 
 	return <div>

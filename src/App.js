@@ -57,7 +57,6 @@ export default function(){
 			}
 			{ page === 'result' &&
 				<Result 
-					products={products}
 					orderData={orderData}
 				/>
 			}
