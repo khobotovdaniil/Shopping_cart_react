@@ -1,27 +1,19 @@
-import React from 'react'
+import React from 'react';
 import ReactDom from 'react-dom';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import App from './App';
-import props from './MinMax/props';
+import StorageContext from './contexts/storage';
+import cartStorage from './storage/cartStorage';
+
+const storage = {
+	cart: cartStorage
+};
 
 ReactDom.render(
-	<App/>,
+	<StorageContext.Provider value={storage}>
+		<App/>
+	</StorageContext.Provider>,
 	document.querySelector('.app')
-)
-
-/*
-import React from 'react'
-import ReactDom from 'react-dom';
-import MinMax from './MinMax'
-import SettingContext from './contexts/settings'
-
-let settings = { lang: 'en' };
-
-ReactDom.render(
-	<SettingContext.Provider value={settings}>
-		<MinMax min={1} current={3} max={5} onChange={() => {}}/>
-	</SettingContext.Provider>,
-	document.querySelector('.app')
-);  */
+);

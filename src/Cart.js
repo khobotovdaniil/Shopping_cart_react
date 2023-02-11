@@ -1,9 +1,15 @@
-import React from 'react'
-import MinMax from './MinMax'
+import React, {useContext} from 'react';
+import StorageContext from './contexts/storage';
 
-export default function({ onNext, products, onChange, onRemove }){
-	let total = products.reduce((sum, pr) => sum + pr.price * pr.cnt, 0);
-	
+import MinMax from './MinMax';
+import {observer} from 'mobx-react-lite';
+
+export default observer(Cart);
+
+function Cart({ onNext }){
+	let {cart} = useContext(StorageContext);
+	let {products, total, remove, change} = cart;
+
 	return <div>
 		<h1>Cart</h1>
 		<hr/>
@@ -23,12 +29,12 @@ export default function({ onNext, products, onChange, onRemove }){
 						<td>{ pr.title }</td>
 						<td>{ pr.price }</td>
 						<td>
-							<MinMax min={1} max={pr.rest} current={pr.cnt} onChange={cnt => onChange(pr.id, cnt)} />
+							<MinMax min={1} max={pr.rest} current={pr.cnt} onChange={cnt => change(pr.id, cnt)} />
 						</td>
 						<td>{ pr.price * pr.cnt }</td>
 						<td>
-							<button type="button" onClick={() => onRemove(pr.id)}>X</button>
-							<button type="button" onClick={() => onChange(pr.id, pr.rest)}>MAX</button>
+							<button type="button" onClick={() => remove(pr.id)}>X</button>
+							<button type="button" onClick={() => change(pr.id, pr.rest)}>MAX</button>
 						</td>
 					</tr>
 				)) }
